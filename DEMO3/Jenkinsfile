@@ -1,0 +1,65 @@
+pipeline {
+  agent any
+
+  tools {
+    maven "3.6.0"
+  }
+
+  stages {
+
+    stage('Clone project') {
+      input {
+        message "Please, choose branch to continue"
+        ok "Select"
+        parameters {
+          choice choices: ['master', 'dev', 'stage', 'qa'], description: '', name: 'environment'
+        }
+      }
+      steps {
+        git branch: "$environment", credentialsId: '71072108-06fa-467a-a172-4bda976dbfe0', url: 'https://yoko.ukrtux.com/o.kosyiev/oleksii_kosyiev.git'
+      }
+    }
+
+    stage('Artifactory configuration') {
+      steps {
+        rtServer(
+          id: "my_artifactory",
+          url: "https://epamkos.jfrog.io/artifactory",
+          credentialsId: "b393703b-c740-4cce-9a03-abe1d31b99c6"
+        )
+        rtMavenDeployer(
+          id: "repo_deploy",
+          serverId: "my_artifactory",
+          releaseRepo: "demo-release",
+          snapshotRepo: "demo-snapshot"
+        )
+      }
+    }
+
+    stage('Exec Maven') {
+      steps {
+        rtMavenRun(
+          pom: 'DEMO3/pom.xml',
+          goals: 'clean install',
+          deployerId: "repo_deploy"
+        )
+      }
+    }
+
+    stage('Publish artifacts') {
+      steps {
+        rtPublishBuildInfo(
+          serverId: "my_artifactory"
+        )
+      }
+    }
+
+  }
+
+  post {
+    always {
+      chuckNorris()
+    }
+  }
+
+}

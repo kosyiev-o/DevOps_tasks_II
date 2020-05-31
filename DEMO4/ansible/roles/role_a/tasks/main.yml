@@ -1,0 +1,18 @@
+---
+# tasks file for role_a
+
+- name:     Install epel for nginx
+  yum:      name=epel-release state=latest
+
+- name:     Ensure nginx is at the latest version
+  yum:      name=nginx state=latest
+
+- name:     Open port to petclinic
+  template: src=firewall.j2 dest=/etc/nginx/firewall.sh mode=111
+  notify:
+  - open ports
+
+- name:     Create configuration nginx file
+  template: src=conf.j2 dest=/etc/nginx/nginx.conf
+  notify:
+  - restart nginx

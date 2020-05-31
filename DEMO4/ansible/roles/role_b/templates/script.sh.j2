@@ -1,0 +1,7 @@
+#!/bin/bash
+
+echo "UPDATE mysql.user SET Host='%' where User='root'; flush privileges;" | mysql;
+echo "ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '';" | mysql;
+sed -i "s/.*bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/my.cnf && \
+sed -i "s/.*bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/mysql.conf.d/mysqld.cnf;
+service mysql restart

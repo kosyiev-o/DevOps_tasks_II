@@ -1,0 +1,24 @@
+---
+
+- name:        Install and configure mysql-server
+  hosts:       VM3
+  remote_user: root
+  become:      yes
+  roles:
+  - role_b
+
+
+- name:        Install and configure petclinic
+  hosts:       VM2
+  remote_user: root
+  become:      yes
+  tasks:
+  roles:
+  - role_c
+
+- name:        Install and configure nginx
+  hosts:       VM1
+  remote_user: root
+  become:      yes
+  roles:
+  - role_a

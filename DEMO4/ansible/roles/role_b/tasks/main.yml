@@ -1,0 +1,38 @@
+---
+# tasks file for role_b
+- name:       Install mysql-server
+  apt:        name=mysql-server state=latest
+
+
+- name:       Install pip
+  apt:        name=python3-pip state=latest
+
+
+- name:       "Install python dependencies for database"
+  pip:        name=pymysql state=latest
+
+
+- name:       Create mysql configuration file
+  template:   src=script.sh.j2 dest=/home/ubuntu/script.sh mode=0755
+
+- name:       Update mysql configuration
+  command:    /home/ubuntu/script.sh
+
+- name:         Include vars of secret.yml
+  include_vars:
+    file:       ../../../../.secrets/secret.yml
+
+- name:       Create user petclinic
+  mysql_user:
+    name:     petclinic
+    password:   '{{ db_password }}'
+    host:     '%'
+    priv:     '*.*:ALL'
+    state:    present
+
+- name:       Create db petclinic
+  mysql_db:
+    name:     petclinic
+    state :   present
+  notify:
+  - restart mysql

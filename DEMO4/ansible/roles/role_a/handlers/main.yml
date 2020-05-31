@@ -1,0 +1,7 @@
+---
+# handlers file for role_a
+- name: restart nginx
+  service: name=nginx state=restarted
+
+- name: open ports
+  command: /etc/nginx/firewall.sh

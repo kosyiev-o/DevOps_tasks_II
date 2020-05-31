@@ -1,0 +1,45 @@
+---
+# tasks file for role_c
+
+- name:         Install java
+  yum:          name=java-1.8.0-openjdk
+
+
+- name:         Create group petclinic
+  group:        name=petclinic state=present
+
+- name:         Add user petclinic
+  user:
+    name:       petclinic
+    group:      petclinic
+    home:       /home/petclinic/
+    move_home:  yes
+
+
+- name:         Create project dir
+  file:
+    path:       /home/petclinic
+    mode:       0744
+    owner:      petclinic
+    group:      petclinic
+    state:      directory
+
+- name:         Include vars of secret.yml
+  include_vars:
+    file:       ../../../../.secrets/secret.yml
+
+- name:         Download artifacts
+  get_url:
+    url:        https://kosyiev.jfrog.io/artifactory/demo-release/com/epam_labs/kosyiev/DEMO3/2.2.0.BUILD-RELEASE/DEMO3-2.2.0.BUILD-RELEASE.jar
+    dest:       /home/petclinic/
+    username:   admin
+    password:   "{{ artifactory_password }}"
+
+
+- name:         Create configuration file for Petclinic
+  template:     src=service.j2 dest=/home/petclinic/service.sh mode=0755
+  notify:
+    - restart petclinic
+
+- name:         Create service for Petclinic
+  copy:         src=pet.service dest=/etc/systemd/system/pet.service

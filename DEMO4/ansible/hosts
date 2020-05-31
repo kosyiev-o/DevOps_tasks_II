@@ -1,0 +1,13 @@
+
+[VM1]
+vm1 ansible_host=34.222.119.229
+
+[VM2]
+vm2 ansible_host=34.215.62.102
+
+[VM3]
+vm3 ansible_host=34.218.246.237
+
+[all:vars]
+db_server=10.0.10.117
+petclinic_server=10.0.10.144

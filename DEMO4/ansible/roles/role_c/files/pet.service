@@ -1,0 +1,6 @@
+[Unit]
+Description = set service for petclinic
+[Service]
+ExecStart = /home/petclinic/service.sh
+[Install]
+WantedBy = multi-user.target

@@ -1,0 +1,5 @@
+---
+# handlers file for role_c
+
+- name:    restart petclinic
+  service: name=pet.service state=restarted

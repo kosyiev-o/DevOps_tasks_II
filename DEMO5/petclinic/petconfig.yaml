@@ -1,0 +1,21 @@
+apiVersion:                              v1
+kind:                                    ConfigMap
+metadata:
+  name:                                  pet-config
+  namespace:                             default
+data:
+  dbname:                                petclinic
+  application.properties:                |
+    spring.profiles.active=mysql
+    database=mysql
+    spring.datasource.url=jdbc:mysql://mysql/petclinic
+    spring.datasource.initialization-mode=always
+    spring.datasource.schema=classpath*:db/${database}/schema.sql
+    spring.datasource.data=classpath*:db/${database}/data.sql
+    spring.thymeleaf.mode=HTML
+    spring.jpa.hibernate.ddl-auto=none
+    spring.messages.basename=messages/messages
+    management.endpoints.web.base-path=/manage
+    management.endpoints.web.exposure.include=*
+    logging.level.org.springframework=INFO
+    spring.resources.cache.cachecontrol.max-age=12h

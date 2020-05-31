@@ -1,0 +1,2 @@
+#!/bin/bash
+java -Dspring.profiles.active=mysql -Dspring.datasource.url=jdbc:mysql://{{ db_server }}/petclinic -jar /home/petclinic/*.jar --server.port={{ petclinic_port }}
